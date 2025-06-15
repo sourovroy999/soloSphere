@@ -4,6 +4,8 @@ import Home from '../Pages/Authentication/Home';
 import Login from '../Pages/Authentication/Login';
 import Registration from '../Pages/Authentication/Register';
 import JobDetails from '../Pages/jobDetails';
+import AddJob from '../Pages/AddJob';
+import ErrorPage from '../Pages/ErrorPage';
 
 
 
@@ -12,6 +14,7 @@ const router = createBrowserRouter([
     {
         path:'/',
         element:<MainLayout/>,
+        errorElement:<ErrorPage/>,
         children:[
             {
                 index:true,
@@ -32,7 +35,12 @@ const router = createBrowserRouter([
                 path:'/job/:id',
                 element:<JobDetails/>,
                 loader: ({params})=> fetch(`http://localhost:9000/job/${params.id}`)
+                
             },
+            {
+                path:'/add-job',
+                element:<AddJob/>
+            }
         ]
     }
 ])

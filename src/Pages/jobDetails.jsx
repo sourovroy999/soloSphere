@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 const JobDetails = () => {
 
@@ -32,12 +32,24 @@ const {user}=useContext(AuthContext)
 
 
 const handleFormSubmission=async(e)=>{
+
+    // if (user?.email === buyer_email) return toast.error('action not permittes')
+
     e.preventDefault()
     const form=e.target 
     const jobId=_id 
     const price=parseFloat(form.price.value)
+
     if(price < parseFloat(min_price)) 
-        return toast.error('Offer more or at least equal to minimum price')
+      
+          {
+            console.log('helloooo');
+            
+            return toast.error('Offer more or at least equal to minimum price')
+          }
+        //   toast is not working .fixed later
+      
+
     const comment= form.comment.value 
     const email=user?.email
     // const buyer_email= buyer_email
@@ -93,7 +105,7 @@ const handleFormSubmission=async(e)=>{
           </h1>
 
           <p className='mt-2 text-lg text-gray-600 '>
-            {JobDetails}
+            {description}
           </p>
           <p className='mt-6 text-sm font-bold text-gray-600 '>
             Buyer Details:
@@ -106,7 +118,7 @@ const handleFormSubmission=async(e)=>{
               </p>
             </div>
             <div className='rounded-full object-cover overflow-hidden w-14 h-14'>
-              <img src='' alt='' />
+              {/* <img src='' alt='' /> */}
             </div>
           </div>
           <p className='mt-6 text-lg font-bold text-gray-600 '>
@@ -126,9 +138,9 @@ const handleFormSubmission=async(e)=>{
               <label className='text-gray-700 ' htmlFor='price'>
                 Price
               </label>
-              <input
+              <input required
                 id='price'
-                type='text'
+                type='number'
                 name='price'
                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md   focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
               />
@@ -173,9 +185,11 @@ const handleFormSubmission=async(e)=>{
             >
               Place Bid
             </button>
+ 
           </div>
         </form>
       </section>
+
     </div>
   )
 }

@@ -3,7 +3,7 @@ import bgLogInImg from '../../assets/images/login.jpg'
 import mylogo from '../../assets/images/logo.png'
 import { useContext } from "react"
 import { AuthContext } from "../../Provider/AuthProvider"
-import toast from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 
 
 const Login = () => {
@@ -25,6 +25,12 @@ try{
   
 }
 
+  }
+
+  const handleToast=()=>{
+    toast.success('clickedddd')
+    console.log('i am clicked');
+    
   }
 
   //email pass sign in
@@ -51,6 +57,8 @@ try{
           <p className='mt-3 text-xl text-center text-gray-600 '>
             Welcome back!
           </p>
+          <button onClick={handleToast}  className="btn">click me</button>
+        
 
           <div onClick={handleGoogleLogin} className='flex cursor-pointer items-center justify-center mt-4 text-gray-600 transition-colors duration-300 transform border rounded-lg   hover:bg-gray-50 '>
             <div className='px-4 py-2'>
