@@ -18,12 +18,12 @@ const UseAxiosSecure = () => {
     //response interceptor
     axiosSecure.interceptors.response.use(
          res=>{
-            console.log('i intercept what is inside',res);
+            // console.log('i intercept what is inside',res);
             
             return res
          },
         async error=>{
-            console.log('error from axios interceptor', error.response);
+            // console.log('error from axios interceptor', error.response);
             if(error.response.status === 401 || error.response.status === 403 ){
                await logOut()
                 navigate('/login')

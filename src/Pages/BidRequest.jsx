@@ -1,39 +1,95 @@
-import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../Provider/AuthProvider"
-import axios from "axios"
+
+
+import {useMutation, useQuery} from '@tanstack/react-query'
+import UseAxiosSecure from "../hooks/UseAxiosSecure"
+import useAuth from "../hooks/useAuth"
+import toast from "react-hot-toast"
 
 const BidRequests = () => {
 
- const{user}=useContext(AuthContext)
+ const{user}=useAuth()
+ const axiosSecure= UseAxiosSecure()
 
-    const [bidRequests, setBidRequests]=useState([])
+ const {data:bidRequests=[], 
+  isLoading, 
+  refetch, 
+  isError, 
+  error}= useQuery({ //data get korar jnno useQuery use korete hbe
 
-    useEffect(()=>{
+  queryFn:()=>getData(),
+  queryKey:['bidRequests']
+
+ })
+
+
+//  console.log(bids);
+console.log(bidRequests);
+
+ 
+
+ 
+
+
+    // const [bidRequests, setBidRequests]=useState([])
+
+    // useEffect(()=>{
     
-      getData() //refresh ui
-    },[user])
+    //   getData() //refresh ui
+    // },[user])
     
     const getData=async()=>{
-        const{data}=await axios(`http://localhost:9000/bid-requests/${user?.email}`, 
-          {withCredentials:true}
-
-    
-        )
+        const{data}=await axiosSecure(`/bid-requests/${user?.email}` )
         
-        setBidRequests(data)
-    }
-    console.log(bidRequests);
+        return data
+      }
+
+  const { mutateAsync}=  useMutation({
+
+      mutationFn:async ({id, status})=>{
+        const {data}=await axiosSecure.patch(`/bid/${id}`,{status})
+        console.log(data);
+        return data
+     },
+
+     onSuccess:()=>{
+      toast.success('Updated')
+      console.log('wow data updated');
+      //refresh ui for latest data
+      refetch()
+      
+     },
+
+
+    })
+
+
 
     const handleStatus=async(id,prevStatus, status)=>{
-      if(prevStatus === status) return console.log('sorry u cant do this');
-      
+      if(prevStatus === status)
+       {
+         
         console.log(id,prevStatus,status);
+        return console.log('sorry u cant do this');
+        
+      }
+      
+      await mutateAsync({id, status})
+        
 
-        const {data}=await axios.patch(`http://localhost:9000/bid/${id}`,{status})
+      //  getData()  //axiossecure use korteci tai eta ar lagbe nahh
 
-        console.log(data) 
-       getData()
+
     }
+
+    
+    if(isLoading) return <p>Data is still loading</p>
+
+    if (isError || error) {
+      console.log(isError,error);
+      
+    }
+
+
 
 
   return (
