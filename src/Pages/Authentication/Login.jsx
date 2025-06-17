@@ -1,24 +1,66 @@
-import { Link, useNavigate } from "react-router"
+import { Link, replace, useLocation, useNavigate } from "react-router"
 import bgLogInImg from '../../assets/images/login.jpg'
 import mylogo from '../../assets/images/logo.png'
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "../../Provider/AuthProvider"
 import toast, { Toaster } from "react-hot-toast"
+import axios from "axios"
 
 
 const Login = () => {
 
   const navigate=useNavigate()
 
-  const {signIn, signInWithGoogle} =useContext(AuthContext)
+  const {signIn, signInWithGoogle,user,loading} =useContext(AuthContext)
+  const location=useLocation()
+  const from=location.state || '/'
+
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },[navigate,user])
+
+  //sign in
+  const handleSignIn=async(e)=>{
+    e.preventDefault()
+
+    const form=e.target
+
+    const email=form.email.value 
+    const password=form.password.value
+   try{
+    const result= await signIn(email,password)
+     const {data}=await axios.post('http://localhost:9000/jwt', {
+    email: result?.user?.email,
+  } ,{
+    withCredentials:true  // ei line na likhle cookie save hobe nah
+  })
+    toast.success('log in successfully')
+    navigate(from, {replace:true})
+   }  
+   catch(err){
+   console.log(err);
+  
+
+} 
+  }
 
   //google signin
 
   const handleGoogleLogin=async()=>{
 try{
-  await signInWithGoogle()
+  const result= await signInWithGoogle()
+  const {data}=await axios.post('http://localhost:9000/jwt', {
+    email: result?.user?.email,
+  } ,{
+    withCredentials:true  // ei line na likhle cookie save hobe nah
+  })
+  console.log(data);  //it will give the token
+  
   toast.success('Log in Successfully')
-  navigate('/')
+      navigate(from, {replace:true})
+
 } catch(err){
   console.log(err);
   toast.error(err?.message)
@@ -27,11 +69,8 @@ try{
 
   }
 
-  const handleToast=()=>{
-    toast.success('clickedddd')
-    console.log('i am clicked');
-    
-  }
+
+  if(user || loading) return
 
   //email pass sign in
 
@@ -57,7 +96,7 @@ try{
           <p className='mt-3 text-xl text-center text-gray-600 '>
             Welcome back!
           </p>
-          <button onClick={handleToast}  className="btn">click me</button>
+          
         
 
           <div onClick={handleGoogleLogin} className='flex cursor-pointer items-center justify-center mt-4 text-gray-600 transition-colors duration-300 transform border rounded-lg   hover:bg-gray-50 '>
@@ -98,7 +137,7 @@ try{
 
             <span className='w-1/5 border-b dark:border-gray-400 lg:w-1/4'></span>
           </div>
-          <form>
+          <form onSubmit={handleSignIn}>
             <div className='mt-4'>
               <label
                 className='block mb-2 text-sm font-medium text-gray-600 '

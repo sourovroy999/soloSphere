@@ -1,24 +1,40 @@
-import { Link, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import bgRegisterImg from '../../assets/images/register.jpg'
 import myLogo from '../../assets/images/logo.png'
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "../../Provider/AuthProvider"
 import toast from "react-hot-toast"
+import axios from "axios"
 
 const Registration = () => {
 
-  const{ createUser, signIn,signInWithGoogle, updateUserProfile, user, setUser}= useContext(AuthContext)
+  const{ createUser,signInWithGoogle, updateUserProfile, user, setUser,loading}= useContext(AuthContext)
+
+    const location=useLocation()
+  const from=location.state || '/'
 
   const navigate=useNavigate()
+
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  })
 
 
   //google signin
   
     const handleGoogleLogin=async()=>{
   try{
-    await signInWithGoogle()
+   const result= await signInWithGoogle()
+     const {data}=await axios.post('http://localhost:9000/jwt', {
+    email: result?.user?.email,
+  } ,{
+    withCredentials:true  // ei line na likhle cookie save hobe nah
+  })
     toast.success('Log in Successfully')
-    navigate('/')
+        navigate(from, {replace:true})
+
   } catch(err){
     console.log(err);
     toast.error(err?.message)
@@ -41,8 +57,17 @@ const Registration = () => {
  console.log(result);
 
  await updateUserProfile(name, photo)
+
+ //optimistic ui update
  setUser({...user, photoURL:photo, displayName:name})
- navigate('/')
+    navigate(from, {replace:true})
+
+     const {data}=await axios.post('http://localhost:9000/jwt', {
+    email: result?.user?.email,
+  } ,{
+    withCredentials:true  // ei line na likhle cookie save hobe nah
+  })
+
  toast.success('SignUp successfully')
  
     } catch(err){
@@ -54,6 +79,8 @@ const Registration = () => {
 
 
   }
+
+  if(user || loading) return
 
 
 

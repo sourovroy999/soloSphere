@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import { useLoaderData } from "react-router"
+import { useLoaderData, useNavigate } from "react-router"
 import { AuthContext } from "../Provider/AuthProvider";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const JobDetails = () => {
 
@@ -21,21 +21,27 @@ const {user}=useContext(AuthContext)
   description,
   min_price,
   max_price,
-  buyer_email,
+
   category,
-  _id
+  _id,
+  buyer
 } = job || {}
+
+console.log(buyer);
+
 
 
       const [startDate, setStartDate] = useState(new Date());
 
 
+      const navigate=useNavigate()
 
 const handleFormSubmission=async(e)=>{
 
-    // if (user?.email === buyer_email) return toast.error('action not permittes')
-
     e.preventDefault()
+    if (user?.email === buyer.buyer_email) 
+        return toast.error('action not permittes')
+
     const form=e.target 
     const jobId=_id 
     const price=parseFloat(form.price.value)
@@ -47,7 +53,14 @@ const handleFormSubmission=async(e)=>{
             
             return toast.error('Offer more or at least equal to minimum price')
           }
-        //   toast is not working .fixed later
+    if(price > parseFloat(max_price)) 
+      
+          {
+            console.log('helloooo');
+            
+            return toast.error('Offer less or at least equal to maximum price')
+          }
+
       
 
     const comment= form.comment.value 
@@ -62,11 +75,13 @@ const handleFormSubmission=async(e)=>{
         price,
         comment, 
         email,
-        buyer_email,
+        buyer,
+     
          status,
          deadline, 
         category, 
         job_title,   
+       
     }
 
     console.table(bidData)
@@ -74,15 +89,23 @@ const handleFormSubmission=async(e)=>{
     try{
         const{data}=await axios.post('http://localhost:9000/bid', bidData)
         console.log(data);
+        toast.success('Bid Placed Successfully')
+        navigate('/my-bids')
         
 
     }catch(err){
         console.log(err);
-        
+        toast.error(err.response.data)
+        // e.target.reset()
     }
 
+  }
 
-}
+
+
+  
+
+
 
 
 
@@ -92,7 +115,7 @@ const handleFormSubmission=async(e)=>{
       <div className='flex-1  px-4 py-7 bg-white rounded-md shadow-md md:min-h-[350px]'>
         <div className='flex items-center justify-between'>
           <span className='text-sm font-light text-gray-800 '>
-            Deadline: {deadline}
+            Deadline: {new Date(deadline).toLocaleDateString()}
           </span>
           <span className='px-4 py-1 text-xs text-blue-800 uppercase bg-blue-200 rounded-full '>
             {category}
@@ -112,13 +135,13 @@ const handleFormSubmission=async(e)=>{
           </p>
           <div className='flex items-center gap-5'>
             <div>
-              <p className='mt-2 text-sm  text-gray-600 '>Name: Jhankar Vai.</p>
+              <p className='mt-2 text-sm  text-gray-600 '>Name: {buyer?.name}</p>
               <p className='mt-2 text-sm  text-gray-600 '>
-                Email: {buyer_email}
+                Email: {buyer?.buyer_email}
               </p>
             </div>
             <div className='rounded-full object-cover overflow-hidden w-14 h-14'>
-              {/* <img src='' alt='' /> */}
+              <img src={buyer?.photo} alt='' />
             </div>
           </div>
           <p className='mt-6 text-lg font-bold text-gray-600 '>
