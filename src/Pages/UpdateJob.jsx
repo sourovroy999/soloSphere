@@ -60,7 +60,7 @@ const handleFormSubmit=async(e)=>{
     }
 
 try{
- const {data}=await axios.put(`http://localhost:9000/job/${_id}`,jobData)
+ const {data}=await axios.put(`https://solosphere-server-three.vercel.app/job/${_id}`,jobData)
  console.log(data);
  toast.success('Job Data updated Successfully')
  navigate('/my-posted-jobs')

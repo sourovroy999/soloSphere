@@ -4,7 +4,7 @@ import axios from 'axios'
 
 const AllJobs = () => {
 
-    const[itemsPerPage, setItemsPerPage]=useState(2)
+    const[itemsPerPage, setItemsPerPage]=useState(4)
     const[currentpage, setCurrentPage]=useState(1)
     const [count, setCount]=useState(0)
     const[filter,setfilter]=useState('')
@@ -18,7 +18,7 @@ const AllJobs = () => {
     
       useEffect(()=>{
         const getData=async()=>{
-          const {data}=await axios(`http://localhost:9000/all-jobs?page=${currentpage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&search=${search}`)
+          const {data}=await axios(`https://solosphere-server-three.vercel.app/all-jobs?page=${currentpage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&search=${search}`)
           setJobs(data)
           console.log(data.length);
           
@@ -30,7 +30,7 @@ const AllJobs = () => {
 
       useEffect(()=>{
         const getCount=async()=>{
-          const {data}=await axios(`http://localhost:9000/jobs-count?filter=${filter}&search=${search}`)
+          const {data}=await axios(`https://solosphere-server-three.vercel.app/jobs-count?filter=${filter}&search=${search}`)
           setCount(data.count)
         }
         getCount()

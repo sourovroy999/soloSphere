@@ -26,7 +26,7 @@ const MyBids = () => {
   
     
     const getData=async()=>{
-        const{data}=await axiosSecure(`http://localhost:9000/my-bids/${user?.email}`
+        const{data}=await axiosSecure(`https://solosphere-server-three.vercel.app/my-bids/${user?.email}`
     
         )
         

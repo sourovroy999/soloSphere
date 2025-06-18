@@ -31,7 +31,7 @@ const Login = () => {
     const password=form.password.value
    try{
     const result= await signIn(email,password)
-     const {data}=await axios.post('http://localhost:9000/jwt', {
+     const {data}=await axios.post('https://solosphere-server-three.vercel.app/jwt', {
     email: result?.user?.email,
   } ,{
     withCredentials:true  // ei line na likhle cookie save hobe nah
@@ -51,7 +51,7 @@ const Login = () => {
   const handleGoogleLogin=async()=>{
 try{
   const result= await signInWithGoogle()
-  const {data}=await axios.post('http://localhost:9000/jwt', {
+  const {data}=await axios.post('https://solosphere-server-three.vercel.app/jwt', {
     email: result?.user?.email,
   } ,{
     withCredentials:true  // ei line na likhle cookie save hobe nah

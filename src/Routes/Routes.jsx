@@ -26,7 +26,7 @@ const router = createBrowserRouter([
                 index:true,
                 element:<Home/>,
                 // loader:()=> fetch(`${import.meta.env.VITE_API_URL}/jobs`),
-                // loader:()=>fetch('http://localhost:9000/jobs')
+                // loader:()=>fetch('https://solosphere-server-three.vercel.app/jobs')
                 
             },
             {
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
                 element:<PrivateRoute>
                     <JobDetails/>
                 </PrivateRoute> ,
-                loader: ({params})=> fetch(`http://localhost:9000/job/${params.id}`)
+                loader: ({params})=> fetch(`https://solosphere-server-three.vercel.app/job/${params.id}`)
                 
             },
             {
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
                 element:<PrivateRoute>
                     <UpdateJob/>
                 </PrivateRoute>,
-                loader: ({params})=> fetch(`http://localhost:9000/job/${params.id}`)
+                loader: ({params})=> fetch(`https://solosphere-server-three.vercel.app/job/${params.id}`)
                 
             },
             {

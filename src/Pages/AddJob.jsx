@@ -61,7 +61,7 @@ const handleJobSubmission=async(e)=>{
     console.table(jobData)
    
     try{
-        const{data}=await axios.post('http://localhost:9000/job', jobData)
+        const{data}=await axios.post('https://solosphere-server-three.vercel.app/job', jobData)
         console.log(data);
         toast.success('Job Data added successfully')
         navigate('/my-posted-jobs')

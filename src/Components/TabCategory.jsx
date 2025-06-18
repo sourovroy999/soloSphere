@@ -10,7 +10,7 @@ const TabCategory = () => {
 
   useEffect(()=>{
     const getData=async()=>{
-      const {data}=await axios('http://localhost:9000/jobs')
+      const {data}=await axios('https://solosphere-server-three.vercel.app/jobs')
       setJobs(data)
     }
     getData()

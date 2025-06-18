@@ -27,7 +27,7 @@ const Registration = () => {
     const handleGoogleLogin=async()=>{
   try{
    const result= await signInWithGoogle()
-     const {data}=await axios.post('http://localhost:9000/jwt', {
+     const {data}=await axios.post('https://solosphere-server-three.vercel.app/jwt', {
     email: result?.user?.email,
   } ,{
     withCredentials:true  // ei line na likhle cookie save hobe nah
@@ -62,7 +62,7 @@ const Registration = () => {
  setUser({...user, photoURL:photo, displayName:name})
     navigate(from, {replace:true})
 
-     const {data}=await axios.post('http://localhost:9000/jwt', {
+     const {data}=await axios.post('https://solosphere-server-three.vercel.app/jwt', {
     email: result?.user?.email,
   } ,{
     withCredentials:true  // ei line na likhle cookie save hobe nah
