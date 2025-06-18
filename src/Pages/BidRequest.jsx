@@ -1,23 +1,25 @@
 
 
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import UseAxiosSecure from "../hooks/UseAxiosSecure"
 import useAuth from "../hooks/useAuth"
 import toast from "react-hot-toast"
 
+
 const BidRequests = () => {
 
+  const queryClient=useQueryClient()
  const{user}=useAuth()
  const axiosSecure= UseAxiosSecure()
 
  const {data:bidRequests=[], 
   isLoading, 
-  refetch, 
+  // refetch, 
   isError, 
   error}= useQuery({ //data get korar jnno useQuery use korete hbe
 
   queryFn:()=>getData(),
-  queryKey:['bidRequests']
+  queryKey:['bidRequests', user?.email]
 
  })
 
@@ -29,6 +31,10 @@ console.log(bidRequests);
 
  
 
+   
+
+   //previous way- eta korbo nah
+   
 
     // const [bidRequests, setBidRequests]=useState([])
 
@@ -55,7 +61,10 @@ console.log(bidRequests);
       toast.success('Updated')
       console.log('wow data updated');
       //refresh ui for latest data
-      refetch()
+      // refetch() 
+
+      //refresh ui for latest data (hard way)
+      queryClient.invalidateQueries({queryKey:['bidRequests']}) //eta use korle baki onno jaygay refetch kora lagbe nah
       
      },
 

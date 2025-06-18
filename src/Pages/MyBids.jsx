@@ -1,34 +1,72 @@
-import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../Provider/AuthProvider"
+import { useEffect, useState } from "react"
 import axios from "axios"
+import UseAxiosSecure from "../hooks/UseAxiosSecure"
+import useAuth from "../hooks/useAuth"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import toast from "react-hot-toast"
 
 const MyBids = () => {
-    const{user}=useContext(AuthContext)
 
-    const [bids, setBids]=useState([])
+  const queryClient=useQueryClient()
+  const axiosSecure=UseAxiosSecure()
+  const{user}=useAuth()
 
-    useEffect(()=>{
-    
-      getData() //refresh ui
-    },[user])
+    const{
+      data:bids=[],
+      isLoading,
+      isError,
+      error
+      
+    }=useQuery({
+      queryFn:()=> getData(),
+      queryKey:['bids', user?.email]
+
+    })
+
+  
     
     const getData=async()=>{
-        const{data}=await axios(`http://localhost:9000/my-bids/${user?.email}`, {withCredentials:true}
+        const{data}=await axiosSecure(`http://localhost:9000/my-bids/${user?.email}`
     
         )
         
-        setBids(data)
+        return data
     }
     console.log(bids);
 
+    const{mutateAsync}=useMutation({
+      mutationFn: async({id})=>{
+        const {data}=await axiosSecure.patch(`/bid/${id}`, {status: 'Complete'})
+        console.log(data);
+        return data
+        
+      },
+
+      onSuccess:()=>{
+        toast.success('Project Completed')
+        console.log('project complete update succssfully');
+
+        //refresh ui
+        queryClient.invalidateQueries({queryKey:['bids']}) // not needed cz we only change one time
+        
+      }
+    })
+
+
+
+
   const handleStatus=async(id)=>{ 
 
-        const {data}=await axios.patch(`http://localhost:9000/bid/${id}`,{status: 'Complete'})
+     
 
-        console.log(data) 
-       getData()
+      await mutateAsync({id})
     }
 
+    if(isLoading) return <p>data is still loading</p>
+    if (isError || error) {
+      console.log(isError,error);
+      
+    }
     
     
 

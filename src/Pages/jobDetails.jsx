@@ -4,11 +4,12 @@ import { AuthContext } from "../Provider/AuthProvider";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
 import toast from "react-hot-toast";
+import UseAxiosSecure from "../hooks/UseAxiosSecure";
 
 const JobDetails = () => {
 
+const axiosSecure=UseAxiosSecure()
 const {user}=useContext(AuthContext)
 
 
@@ -87,7 +88,7 @@ const handleFormSubmission=async(e)=>{
     console.table(bidData)
    
     try{
-        const{data}=await axios.post('http://localhost:9000/bid', bidData)
+        const{data}=await axiosSecure.post('/bid', bidData)
         console.log(data);
         toast.success('Bid Placed Successfully')
         navigate('/my-bids')
@@ -96,7 +97,7 @@ const handleFormSubmission=async(e)=>{
     }catch(err){
         console.log(err);
         toast.error(err.response.data)
-        // e.target.reset()
+        e.target.reset()
     }
 
   }
